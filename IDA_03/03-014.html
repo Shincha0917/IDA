@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Canvas Art</title>
+
+    <script>
+        //canvas の中身を指し示すもの
+        let ctx;
+
+        //canvas の幅
+        let cw;
+
+        //canvas の高さ
+        let ch;
+
+        //描画する粒の数
+        const particleNum = 150;
+
+
+        //初期化処理
+        function init(){
+
+            //canvasを取得
+            let canvas = document.getElementById('mycanvas');
+
+            //canvasが存在しなければ終了
+            if(!canvas || !canvas.getContext){
+                return false;
+            }
+
+            //canvasの中身を取得
+            ctx = canvas.getContext('2d');
+
+            //canvasの幅と高さを取得
+            cw = canvas.width;
+            ch = canvas.height;
+
+            //全体の透明度
+            ctx.globalAlpha = 0.8;
+
+            //描画開始
+            draw();
+
+            //一定時間ごとに描画
+            setInterval("draw()",100);
+        }
+
+
+        function draw(){
+
+            //背景を少しずつ消して残像を作る
+            ctx.fillStyle = "rgba(10,10,30,0.2)";
+            ctx.fillRect(0,0,cw,ch);
+
+
+            //粒を描画
+            for(let i=0;i<particleNum;i++){
+
+                //ランダムな位置
+                let x = getRandomNum(cw);
+                let y = getRandomNum(ch);
+
+                //ランダムな大きさ
+                let size = getRandomNum(6) + 1;
+
+                //ランダムな色
+                let r = getRandomColor();
+                let g = getRandomColor();
+                let b = getRandomColor();
+
+                //光の色を設定
+                ctx.fillStyle =
+                    "rgba("+r+","+g+","+b+","+getRandomAlpha()+")";
+
+
+                //円を描く
+                ctx.beginPath();
+
+                ctx.arc(
+                    x,
+                    y,
+                    size,
+                    0,
+                    360/180*Math.PI,
+                    true
+                );
+
+                ctx.fill();
+
+
+                //粒からランダムな方向へ線を描く
+                ctx.strokeStyle =
+                    "rgba("+r+","+g+","+b+",0.3)";
+
+                ctx.lineWidth = 1;
+
+                ctx.beginPath();
+
+                ctx.moveTo(x,y);
+
+                ctx.lineTo(
+                    x + getRandomNum(100) - 50,
+                    y + getRandomNum(100) - 50
+                );
+
+                ctx.stroke();
+
+            }
+
+        }
+
+
+        //ランダムな数値を返す
+        function getRandomNum(num){
+            return Math.floor(Math.random()*num);
+        }
+
+
+        //ランダムな色を返す
+        function getRandomColor(){
+            return Math.floor(Math.random()*256);
+        }
+
+
+        //ランダムな透明度を返す
+        function getRandomAlpha(){
+            return Math.random();
+        }
+
+    </script>
+</head>
+
+
+<body onload="init();">
+
+    <h1>Canvas Art</h1>
+
+    <canvas
+        id="mycanvas"
+        width="1000"
+        height="800">
+    </canvas>
+
+</body>
+</html>
